@@ -1,9 +1,9 @@
 import numpy as np
-from scipy.spatial import Delaunay
 from typing import List
 from topography.triangle import Triangle
 import matplotlib.pyplot as plt
-
+from scipy.spatial import Delaunay
+from scipy.interpolate import LinearNDInterpolator
 
 class Topography:
     """
@@ -69,13 +69,59 @@ class Topography:
         triangles = self.get_triangles()
         return np.array([triangle.calculate_normal(normalize=True) for triangle in triangles])
 
+    def interpolate(self, N: int) -> np.ndarray:
+        """
+        Linear interpolator.
+
+        Parameters:
+        N (int): Number of grid steps.
+
+        Returns:
+        Topography: Topography object with the interpolated points.
+        """
+        x, y, z = self.points.T
+        X = np.linspace(min(x), max(x), N)
+        Y = np.linspace(min(y), max(y), N)
+        X, Y = np.meshgrid(X, Y)
+
+        interp = LinearNDInterpolator(list(zip(x, y)), z)
+        Z = interp(X, Y)
+        points = np.vstack([X.ravel(), Y.ravel(), Z.ravel()]).T
+        return Topography(points)
+
 
 if __name__ == '__main__':
     # Generate random points
-    points = np.random.rand(5, 3)
+    points = np.array([[1,0,0],[0,1,0],[0,0,1]])
     topography = Topography(points)
 
     # Plot Delaunay triangulation
-    plt.triplot(points[:, 0], points[:, 1], topography.get_simplices())
-    plt.plot(points[:, 0], points[:, 1], 'o')
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1, projection='3d')
+
+    # Draw the triangles
+    ax.plot_trisurf(
+        *topography.points.T, 
+        triangles=topography.get_simplices(), 
+        cmap=plt.cm.Spectral, alpha=0.5)
+
+    # Draw the triangle vertices
+    ax.scatter(*topography.points.T)
+
+    # Draw the normal vectors
+    ax.scatter(*topography.get_centroids().T)
+    ax.quiver(*topography.get_centroids().T, *topography.get_normals().T)
+
+    # Draw some interpolated point for verification
+    point = np.array([1/3,1/5,0])
+    triangle = topography.get_triangles()[0]
+    interp = triangle.calculate_interpolation(point)
+    ax.scatter(*interp)
+    
+    # Display the plots
+    ax.set_title('Feature visualization of a triangle')
+    ax.set_xlabel('x')
+    ax.set_ylabel('y')
+    ax.set_zlabel('z')
+    ax.set_aspect('equal')
     plt.show()

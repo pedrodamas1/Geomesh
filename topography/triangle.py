@@ -16,6 +16,24 @@ class Triangle:
 			raise ValueError("Coordinates must be a numpy array of shape (3, 3).")
 		self.coordinates = coordinates
 
+	def __str__(self):
+			"""
+			Return the string representation of the Triangle object.
+
+			Returns:
+			str: String representation of the Triangle object.
+			"""
+			return f"Triangle(vertices={self.coordinates.tolist()})"
+
+	def __repr__(self):
+		"""
+		Return the unambiguous representation of the Triangle object.
+
+		Returns:
+		str: Unambiguous representation of the Triangle object.
+		"""
+		return f"Triangle(coordinates={self.coordinates})"
+
 	def calculate_centroid(self) -> np.ndarray:
 		"""
 		Calculate the centroid O of the triangle.
@@ -55,7 +73,7 @@ class Triangle:
 
 	def calculate_barycentric(self, point: np.ndarray) -> np.ndarray:
 		"""
-		Calculate the barycentric coordinates of a point inside the triangle.
+		Calculate the barycentric coordinates of a point inside the triangle (projected onto the xy-plane).
 
 		Parameters:
 		point (numpy.ndarray): Array of shape (3,) representing the coordinates of the point.
@@ -63,9 +81,14 @@ class Triangle:
 		Returns:
 		numpy.ndarray: Array of shape (3,) representing the barycentric coordinates (alpha, beta, gamma).
 		"""
-		P = point
-		A, B, C = self.coordinates
-		area_ABC = self.calculate_area()
+		P = point.copy()
+		P[2] = 0.
+		coordinates = self.coordinates.copy()
+		coordinates[:,2] = 0.
+
+		# Parse the coordinates of each vertex of the triangle
+		A, B, C = coordinates
+		area_ABC = Triangle( np.array([A, B, C]) ).calculate_area()
 
 		# Calculate areas of sub-triangles
 		area_APB = Triangle( np.array([A, P, B]) ).calculate_area()
@@ -79,9 +102,9 @@ class Triangle:
 
 		return np.array([alpha, beta, gamma])
 
-	def is_coplanar(self, point: np.ndarray) -> bool:
+	def is_within(self, point: np.ndarray) -> bool:
 		"""
-		Check if a point is coplanar on the triangle.
+		Check if a point is within the triangle (projected onto the xy-plane).
 
 		Parameters:
 		point (numpy.ndarray): Array of shape (3,) representing the coordinates of the point.
@@ -92,12 +115,27 @@ class Triangle:
 		barycentric_coordinates = self.calculate_barycentric(point)
 
 		# Check if barycentric coordinates sum up to 1
-		if np.isclose(np.sum(barycentric_coordinates), 1.0):
-			return True
-		else:
-			return False
+		return np.isclose(np.sum(barycentric_coordinates), 1.0)
+
+	def calculate_interpolation(self, point: np.ndarray) -> np.ndarray:
+		"""
+		Calculate the interpolation of a point within the triangle.
+
+		Parameters:
+		point (numpy.ndarray): Array of shape (3,) representing the coordinates of the point.
+
+		Returns:
+		numpy.ndarray: Interpolated coordinates.
+		"""
+		barycentric = self.calculate_barycentric(point)
+		return np.dot(barycentric, self.coordinates)
 
 
 if __name__ == '__main__':
-	vertices = np.array([[1,0,0], [0,1,0], [0,0,0.5]])
+	vertices = np.array([[0.8,-0.2,0], [0.3,1,0], [0,0,0]])
 	triangle = Triangle(vertices)
+	point = np.array([0.4,0.6,0])
+	barycentric = triangle.calculate_barycentric(point)
+	print(barycentric)
+
+ 
