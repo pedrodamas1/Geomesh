@@ -1,6 +1,4 @@
-
 import numpy as np
-
 
 class Triangle:
 	"""
@@ -50,7 +48,7 @@ class Triangle:
 		numpy.ndarray: Array of shape (3,) representing the normal vector.
 		"""
 		A, B, C = self.coordinates
-		normal = np.cross(B-A, C-A)
+		normal = np.cross(B-A, C-A).astype(float) # Ensure normal is float array
 		if normalize:
 			normal /= np.linalg.norm(normal)
 		return normal
@@ -79,10 +77,25 @@ class Triangle:
 		beta = area_BPC / area_ABC
 		gamma = area_CPA / area_ABC
 
+		return np.array([alpha, beta, gamma])
+
+	def is_coplanar(self, point: np.ndarray) -> bool:
+		"""
+		Check if a point is coplanar on the triangle.
+
+		Parameters:
+		point (numpy.ndarray): Array of shape (3,) representing the coordinates of the point.
+
+		Returns:
+		bool: Boolean value, returning True if the point is coplanar and False otherwise.
+		"""
+		barycentric_coordinates = self.calculate_barycentric(point)
+
 		# Check if barycentric coordinates sum up to 1
-		if not np.isclose(alpha + beta + gamma, 1.0):
-			raise ValueError("Barycentric coordinates do not sum up to 1.")
-		return alpha, beta, gamma
+		if np.isclose(np.sum(barycentric_coordinates), 1.0):
+			return True
+		else:
+			return False
 
 
 if __name__ == '__main__':

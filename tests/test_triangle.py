@@ -1,8 +1,6 @@
 import numpy as np
 import unittest
-
-from triangle.triangle import Triangle
-
+from topography.triangle import Triangle
 
 class TestTriangle(unittest.TestCase):
     def test_input_validation(self):
@@ -43,6 +41,15 @@ class TestTriangle(unittest.TestCase):
         point = np.array([0.25, 0.25, 0.25])
         alpha, beta, gamma = triangle.calculate_barycentric(point)
         self.assertAlmostEqual(alpha + beta + gamma, 1.0)
+
+    def test_is_coplanar(self):
+        # Test coplanarity check
+        vertices = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 0]])
+        triangle = Triangle(vertices)
+        coplanar_point = np.array([1/3, 1/3, 0])  # Coplanar point
+        non_coplanar_point = np.array([0.5, 0.5, 0.5])  # Non-coplanar point
+        self.assertTrue(triangle.is_coplanar(coplanar_point))
+        self.assertFalse(triangle.is_coplanar(non_coplanar_point))
 
 
 if __name__ == '__main__':
