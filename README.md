@@ -1,8 +1,8 @@
-# Visualizing topography and PV pannel placement
+# Geomesh: A Python Toolkit for Photovoltaic Park Simulation and Visualization
 
-This Python project entails the visualization and analysis of electricity consumption data to determine the efficacy of habit changes on energy usage. Through data visualization techniques, the project assesses whether alterations in daily habits have led to a positive impact on electricity consumption. By examining trends, patterns, and correlations in the data, the project aims to provide insights into the effectiveness of behavioral adjustments in reducing energy consumption. For more insights into this project, take a look at the Notebook **PROCESS/6 - visualization.ipynb**.
+"Geomesh" is a comprehensive Python project that integrates geometric analysis, mesh generation, interpolation techniques, and rendering capabilities to simulate and visualize photovoltaic parks on various terrains. The project begins with exploring the geometric properties of triangles, essential for understanding the topology of the terrain. Leveraging Delaunay triangulation, it constructs a mesh from a given point cloud, enabling representation of the terrain surface. Through 2D NDI interpolation, the mesh quality is enhanced, ensuring accuracy in representing the terrain's features. The final stage involves rendering photovoltaic modules onto the topography, providing a realistic visualization of how the solar panels would look on the landscape. "Geomesh" offers a powerful toolkit for engineers and planners to simulate and visualize photovoltaic parks, aiding in decision-making processes and optimizing the design of renewable energy installations
 
-Below is a snippet of an animation produced in plotly that can be visualized in this [link](https://htmlpreview.github.io/?https://github.com/pedrodamas1/PV-Topography/blob/main/data/render.htm).
+Below is a snippet showcasing a simulation of the solar plant, meticulously crafted using Plotly, a powerful visualization library integrated into this project. [link](https://htmlpreview.github.io/?https://github.com/pedrodamas1/PV-Topography/blob/main/data/render.htm).
 
 ![](img/pv_park.png)
 
