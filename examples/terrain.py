@@ -5,7 +5,7 @@ import numpy as np
 from scipy.interpolate import LinearNDInterpolator
 
 # Import terrain data
-df = pd.read_excel('data/points.xlsx')
+df = pd.read_excel('data/disordered_points.xlsx')
 print(f'This file has {len(df)} rows.')
 
 # Remove duplicates
@@ -28,26 +28,31 @@ topo1 = Topography(points)
 # Create the grid interpolation topography
 topo2 = topo1.interpolate(50)
 
+# Save the ordered terrain
+topo2.save('data/ordered_points.xlsx')
+
 # Plot the figures
 fig = plt.figure()
 
 # set up the axes for the first plot
-ax = fig.add_subplot(1, 2, 1, projection='3d')
+ax1 = fig.add_subplot(1, 2, 1, projection='3d')
 
 # Draw the triangles of the first topography
-ax.plot_trisurf(
+ax1.plot_trisurf(
     *topo1.points.T, 
     triangles=topo1.get_simplices(), 
     cmap=plt.cm.Spectral, alpha=1, antialiased=False)
 
 # set up the axes for the second plot
-ax = fig.add_subplot(1, 2, 2, projection='3d')
+ax2 = fig.add_subplot(1, 2, 2, projection='3d')
 
 # Draw the triangles of the first topography
-ax.plot_trisurf(
+ax2.plot_trisurf(
     *topo2.points.T, 
     triangles=topo2.get_simplices(), 
     cmap=plt.cm.Spectral, alpha=1, antialiased=False)
 
 # Display the figure
+ax1.set_aspect('equal')
+ax2.set_aspect('equal')
 plt.show()

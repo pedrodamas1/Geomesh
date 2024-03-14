@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 from typing import List
 from topography.triangle import Triangle
 import matplotlib.pyplot as plt
@@ -88,6 +89,20 @@ class Topography:
         Z = interp(X, Y)
         points = np.vstack([X.ravel(), Y.ravel(), Z.ravel()]).T
         return Topography(points)
+
+    def save(self, path: str) -> None:
+        """
+        Save the points to an excel file.
+
+        Parameters:
+        path (str): path with directory and name of file to save.
+
+        Returns:
+        None
+        """
+        df = pd.DataFrame(self.points, columns=['x', 'y', 'z'])
+        df.to_excel(path, index=False)
+        return None
 
 
 if __name__ == '__main__':
