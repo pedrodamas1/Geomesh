@@ -1,8 +1,6 @@
 import pandas as pd
 from topography.topography import Topography
 import matplotlib.pyplot as plt
-import numpy as np
-from scipy.interpolate import LinearNDInterpolator
 
 # Import terrain data
 df = pd.read_excel('data/disordered_points.xlsx')
