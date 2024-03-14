@@ -50,3 +50,6 @@ for point in points:
 # Show the scene
 fig.update_layout(scene = dict(aspectmode='data'))
 fig.show()
+
+# Save HTML file locally
+fig.write_html("data/render.html")
